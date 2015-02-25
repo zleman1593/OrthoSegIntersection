@@ -27,7 +27,16 @@ algorithm, and  simulates the algorithm as it runs.
 
 #include <vector> 
 
-using namespace std; 
+using namespace std;
+
+//Comparator
+struct yCoordinate {
+    bool operator() (const segment2D& first, const segment2D& second) const{
+        return first.end.y < second.end.y;
+    }
+};
+
+
 
 
 
@@ -97,10 +106,6 @@ set<segment2D,yCoordinate> as;
 
 
 
-int yCoordinate(segment2D first, segment2D second){
-    return -1;
-}
- 
 
 
 
@@ -226,7 +231,7 @@ void test() {
         as.insert(segments[i]);
         
     }
-    printf("segment");
+
     
 }
 
