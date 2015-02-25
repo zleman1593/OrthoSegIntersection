@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A2E997371A9D59DE0029ABF1 /* geom.c in Sources */ = {isa = PBXBuildFile; fileRef = A2E997321A9D59DE0029ABF1 /* geom.c */; };
-		A2E997381A9D59DE0029ABF1 /* rtimer.c in Sources */ = {isa = PBXBuildFile; fileRef = A2E997341A9D59DE0029ABF1 /* rtimer.c */; };
-		A2E997391A9D59DE0029ABF1 /* viewPoints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2E997361A9D59DE0029ABF1 /* viewPoints.cpp */; };
+		A29513181A9D81FF00501E4E /* geom.c in Sources */ = {isa = PBXBuildFile; fileRef = A29513131A9D81FF00501E4E /* geom.c */; };
+		A29513191A9D81FF00501E4E /* rtimer.c in Sources */ = {isa = PBXBuildFile; fileRef = A29513151A9D81FF00501E4E /* rtimer.c */; };
+		A295131A1A9D81FF00501E4E /* viewPoints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A29513171A9D81FF00501E4E /* viewPoints.cpp */; };
 		A2E9973C1A9D5ACC0029ABF1 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2E9973B1A9D5ACC0029ABF1 /* GLUT.framework */; };
 		A2E9973E1A9D5AD30029ABF1 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2E9973D1A9D5AD30029ABF1 /* OpenGL.framework */; };
 /* End PBXBuildFile section */
@@ -27,12 +27,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A29513131A9D81FF00501E4E /* geom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = geom.c; sourceTree = "<group>"; };
+		A29513141A9D81FF00501E4E /* geom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geom.h; sourceTree = "<group>"; };
+		A29513151A9D81FF00501E4E /* rtimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rtimer.c; sourceTree = "<group>"; };
+		A29513161A9D81FF00501E4E /* rtimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtimer.h; sourceTree = "<group>"; };
+		A29513171A9D81FF00501E4E /* viewPoints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = viewPoints.cpp; sourceTree = "<group>"; };
 		A2E997281A9D56220029ABF1 /* orthosegintersection */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = orthosegintersection; sourceTree = BUILT_PRODUCTS_DIR; };
-		A2E997321A9D59DE0029ABF1 /* geom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = geom.c; path = ../../../../../Desktop/move/geom.c; sourceTree = "<group>"; };
-		A2E997331A9D59DE0029ABF1 /* geom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = geom.h; path = ../../../../../Desktop/move/geom.h; sourceTree = "<group>"; };
-		A2E997341A9D59DE0029ABF1 /* rtimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rtimer.c; path = ../../../../../Desktop/move/rtimer.c; sourceTree = "<group>"; };
-		A2E997351A9D59DE0029ABF1 /* rtimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rtimer.h; path = ../../../../../Desktop/move/rtimer.h; sourceTree = "<group>"; };
-		A2E997361A9D59DE0029ABF1 /* viewPoints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = viewPoints.cpp; path = ../../../../../Desktop/move/viewPoints.cpp; sourceTree = "<group>"; };
 		A2E9973A1A9D59EB0029ABF1 /* Makefile.make */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.make; sourceTree = "<group>"; };
 		A2E9973B1A9D5ACC0029ABF1 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		A2E9973D1A9D5AD30029ABF1 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -72,12 +72,12 @@
 		A2E9972A1A9D56220029ABF1 /* orthosegintersection */ = {
 			isa = PBXGroup;
 			children = (
+				A29513131A9D81FF00501E4E /* geom.c */,
+				A29513141A9D81FF00501E4E /* geom.h */,
+				A29513151A9D81FF00501E4E /* rtimer.c */,
+				A29513161A9D81FF00501E4E /* rtimer.h */,
+				A29513171A9D81FF00501E4E /* viewPoints.cpp */,
 				A2E9973A1A9D59EB0029ABF1 /* Makefile.make */,
-				A2E997321A9D59DE0029ABF1 /* geom.c */,
-				A2E997331A9D59DE0029ABF1 /* geom.h */,
-				A2E997341A9D59DE0029ABF1 /* rtimer.c */,
-				A2E997351A9D59DE0029ABF1 /* rtimer.h */,
-				A2E997361A9D59DE0029ABF1 /* viewPoints.cpp */,
 			);
 			path = orthosegintersection;
 			sourceTree = "<group>";
@@ -138,9 +138,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A2E997381A9D59DE0029ABF1 /* rtimer.c in Sources */,
-				A2E997371A9D59DE0029ABF1 /* geom.c in Sources */,
-				A2E997391A9D59DE0029ABF1 /* viewPoints.cpp in Sources */,
+				A295131A1A9D81FF00501E4E /* viewPoints.cpp in Sources */,
+				A29513191A9D81FF00501E4E /* rtimer.c in Sources */,
+				A29513181A9D81FF00501E4E /* geom.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,6 +254,7 @@
 				A2E997311A9D56220029ABF1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
