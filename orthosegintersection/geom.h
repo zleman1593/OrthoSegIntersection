@@ -13,6 +13,13 @@ typedef struct _segment2d {
 } segment2D;
 
 
+typedef struct _event {
+    char eventType;
+    int eventXCoord ;
+    struct _segment2d segment;
+} event;
+
+
 
 //a list of points 
 typedef struct _pointNode pointNode; 
