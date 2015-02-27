@@ -106,6 +106,7 @@ vector<point2D> intpoints;
 multiset<segment2D,yCoordinate> as;
 
 //the auxiliary active structure that stores the y-coordinates of the segments intersecting the sweep line
+//This is only used because a given multiset cannot be searched through by a type, such as an int in this case, that is different from the type used during the initial declaration (a segment2D in our case).
 multiset<int,yCoordinateInt> asY;
 //Interator for the active structures
 multiset<int,yCoordinateInt>::iterator itlow,itup;
@@ -195,13 +196,15 @@ void timerfunc() {
         event e = events[i];
         //If event is the start of a horizontal line segement
         if(e.eventType == 'S'){
-            //Add to active structure
+            //Add segment to active structure
             as.insert(e.segment);
+            //Add segemnt y-coordinate to aux active structure
             asY.insert(e.segment.start.y);
             
         }else if (e.eventType == 'E'){//If event is the end of a horizontal line segement
-            
+            //Remove segment from active structure
             asY.erase(asY.find(e.segment.start.y));
+            //Remove from aux as the y coordinate associated with segement being removed
             as.erase(as.find(e.segment));
         }else{//If event is the a vertical line segement
             
