@@ -1,0 +1,9 @@
+Zackery Leman & Ivy Xing
+Computational Geometry
+A C++ implementation of an orthogonal line segement intersection detector animated with openGl
+
+Instructions:
+To compile and run either open the xcode project file in xcode and click run.
+(Product menu-> scheme-> edit scheme -> add your n argument )
+OR
+Use the provided makefile with the make command.

@@ -36,6 +36,7 @@
 		A2E9973A1A9D59EB0029ABF1 /* Makefile.make */ = {isa = PBXFileReference; lastKnownFileType = text; path = Makefile.make; sourceTree = "<group>"; };
 		A2E9973B1A9D5ACC0029ABF1 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		A2E9973D1A9D5AD30029ABF1 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		A2F36E961AA0AE1E00E3D365 /* readme.readme */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme.readme; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +79,7 @@
 				A29513161A9D81FF00501E4E /* rtimer.h */,
 				A29513171A9D81FF00501E4E /* viewPoints.cpp */,
 				A2E9973A1A9D59EB0029ABF1 /* Makefile.make */,
+				A2F36E961AA0AE1E00E3D365 /* readme.readme */,
 			);
 			path = orthosegintersection;
 			sourceTree = "<group>";

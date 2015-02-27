@@ -1,3 +1,5 @@
+//Zackery Leman & Ivy Xing
+
 #include "geom.h"
 #include <assert.h>
 #include <stdio.h>

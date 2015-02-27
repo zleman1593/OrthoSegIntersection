@@ -1,6 +1,6 @@
 /* view.c
  
- Laura Toma
+ Laura Toma, Ivy Xing, Zackery Leman
  
  What it does:
  
@@ -10,14 +10,13 @@
  
  */
 #include <set>
+#include <vector>
 #include "geom.h"
 #include "rtimer.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
-//#include <algorithm>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -25,18 +24,16 @@
 #endif
 
 
-#include <vector>
-
 using namespace std;
 
-//Comparator
+//Comparator for active structure, that sorts segements by their y-coordinates
 struct yCoordinate {
     bool operator() (const segment2D& first, const segment2D& second) const{
         return first.end.y < second.end.y;
     }
 };
 
-//Comparator
+//Comparator for auxiliary active structure containing only y-coordinate ints
 struct yCoordinateInt{
     bool operator() (const int& first, const int& second) const{
         return first < second;
@@ -53,6 +50,7 @@ GLfloat black[3] = {0.0, 0.0, 0.0};
 GLfloat white[3] = {1.0, 1.0, 1.0};
 GLfloat gray[3] = {0.5, 0.5, 0.5};
 GLfloat yellow[3] = {1.0, 1.0, 0.0};
+GLfloat orange[3] = {1.0, 0.5, 0.0};
 GLfloat magenta[3] = {1.0, 0.0, 1.0};
 GLfloat cyan[3] = {0.0, 1.0, 1.0};
 
@@ -106,15 +104,16 @@ vector<point2D> intpoints;
 
 //the active structure that stores the segments intersecting the sweep line
 multiset<segment2D,yCoordinate> as;
-//set<segment2D,yCoordinate>::iterator itlow,itup;
 
-
+//the auxiliary active structure that stores the y-coordinates of the segments intersecting the sweep line
 multiset<int,yCoordinateInt> asY;
+//Interator for the active structures
 multiset<int,yCoordinateInt>::iterator itlow,itup;
 
 //the events
 vector<event> events;
-//the events
+
+//Keeps track of last event looked at to prevent unnecessary repeat iterations
 int lastEventScanned = 0;
 
 
@@ -138,12 +137,177 @@ void drawCircle(float cx, float cy, float r, int num_segments)
         t = x;
         x = c * x - s * y;
         y = s * t + c * y;
-    } 
+    }
     glEnd();
 }
 
 
 
+/*Comparator for events vector*/
+bool comp(const event& first, const event& second) { return first.eventXCoord < second.eventXCoord; }
+
+/*Called to sort the events vector*/
+void sortEvents() {
+    sort(events.begin(), events.end(), comp);
+}
+
+/* Called before sweeping line begins moving to add all events from the 
+ * generated line segments to the event vector.
+ * Creates two events from a horizontal segment (start, end)
+ * and one for a vertical segment. Events are indexed by their x-coordinate
+ */
+void creatEvents() {
+    
+    for (int i=0; i<segments.size(); i++) {
+        event e1;
+        event e2;
+        segment2D seg = segments[i];
+        if(seg.start.x != seg.end.x){
+            //Segment start event
+            e1.segment = seg;
+            e1.eventType = 'S';
+            e1.eventXCoord = seg.start.x;
+            events.push_back(e1);
+            //Segment end event
+            e2.segment = seg;
+            e2.eventType = 'E';
+            e2.eventXCoord = seg.end.x;
+            events.push_back(e2);
+            
+        }else{//Else segement is vertical so create one event
+            e1.segment = seg;
+            e1.eventType = 'V';
+            e1.eventXCoord = seg.start.x;
+            events.push_back(e1);
+        }
+        
+    }
+    
+}
+
+void timerfunc() {
+    
+    //Iterate from the last element/event looked at until it reaches an element/event that has an equal x coordinate
+    int i;
+    for (i = lastEventScanned; events[i].eventXCoord <= sweep_line_x; i++) {
+        //Get event that the sweep line is currently on
+        event e = events[i];
+        //If event is the start of a horizontal line segement
+        if(e.eventType == 'S'){
+            //Add to active structure
+            as.insert(e.segment);
+            asY.insert(e.segment.start.y);
+            
+        }else if (e.eventType == 'E'){//If event is the end of a horizontal line segement
+            
+            asY.erase(asY.find(e.segment.start.y));
+            as.erase(as.find(e.segment));
+        }else{//If event is the a vertical line segement
+            
+            int start = e.segment.start.y;
+            int end = e.segment.end.y;
+            
+            //Swap to make sure start start value is always a lower y
+            if (start > end) {
+                int temp = start;
+                start = end;
+                end= temp;
+            }
+            
+            //Get iterators for multiset from two y-coord bounds
+            itlow = asY.lower_bound(start);
+            itup = asY.upper_bound(end);
+            
+            //Using iterators add all intersections formed from this vertical line and appropriate horizontal lines in the active structure.
+            for (multiset<int,yCoordinateInt>::iterator it = itlow; it != itup; ++it){
+                printf("Intersection: (%i,%d)\n",e.segment.start.x,*it);
+                point2D intersect;
+                intersect.x = e.segment.start.x;
+                intersect.y = *it;
+                intpoints.push_back(intersect);
+                
+            }
+        }
+    }
+    
+    glutPostRedisplay();
+    sweep_line_x++;
+    //Set next starting location for loop
+    lastEventScanned = i;
+    
+}
+
+//Draw all the elements in the active structure
+void draw_active_structure() {
+    
+    //set color
+    glColor3fv(orange);
+    
+    for (multiset<segment2D,yCoordinate>::iterator it = as.begin(); it != as.end(); ++it){
+        glBegin(GL_LINES);
+        glVertex2f(it->start.x, it->start.y);
+        glVertex2f(it->end.x, it->end.y);
+        glEnd();
+    }
+    
+}
+
+
+//Draw all the elements in intpoints (i.e draw a circle around all identified intersections)
+void draw_intersection_points() {
+    //set color
+    glColor3fv(white);
+    for (int i =0; i < intpoints.size(); i++){
+        drawCircle(intpoints[i].x, intpoints[i].y,1,20);
+    }
+}
+
+
+
+
+
+/* ****************************** */
+int main(int argc, char** argv) {
+    
+    //read number of points from user
+    if (argc!=2) {
+        printf("usage: viewPoints <nbPoints>\n");
+        exit(1);
+    }
+    n = atoi(argv[1]);
+    printf("you entered n=%d\n", n);
+    assert(n >0);
+    
+    initialize_segments_random();
+    print_segments();
+    creatEvents();
+    sortEvents();
+    
+    
+    /* initialize GLUT  */
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(WINDOWSIZE, WINDOWSIZE);
+    glutInitWindowPosition(100,100);
+    glutCreateWindow(argv[0]);
+    
+    /* register callback functions */
+    glutDisplayFunc(display);
+    glutKeyboardFunc(keypress);
+    glutIdleFunc(timerfunc);
+    
+    /* init GL */
+    /* set background color black*/
+    glClearColor(0.3,0.3, 0.3, 0.3);
+    /* here we can enable depth testing and double buffering and so
+     on */
+    
+    
+    /* give control to event handler */
+    glutMainLoop();
+    
+    return 0;
+}
 /* ************************************************** */
 void initialize_segments() {
     
@@ -248,7 +412,6 @@ void initialize_segments_random() {
 
 /* ************************************************** */
 void print_segments() {
-    
     for (int i=0; i<segments.size(); i++) {
         printf("segment %d: [(%d,%d), (%d,%d)]\n",
                i, segments[i].start.x, segments[i].start.y, segments[i].end.x, segments[i].end.y);
@@ -258,104 +421,8 @@ void print_segments() {
 }
 
 
-/* ***************************************************/
-void creatEvents() {
-    
-    for (int i=0; i<segments.size(); i++) {
-        event e1;
-        event e2;
-        segment2D seg = segments[i];
-        if(seg.start.x != seg.end.x){
-            e1.segment = seg;
-            e1.eventType = 'S';
-            e1.eventXCoord = seg.start.x;
-            e2.segment = seg;
-            e2.eventType = 'E';
-            e2.eventXCoord = seg.end.x;
-            events.push_back(e1);
-            events.push_back(e2);
-        }else{
-            e1.segment = seg;
-            e1.eventType = 'V';
-            e1.eventXCoord = seg.start.x;
-            events.push_back(e1);
-        }
-        
-    }
-    
-    
-}
 
-bool comp(const event& first, const event& second) { return first.eventXCoord < second.eventXCoord; }
-
-void sortEvents() {
-    sort(events.begin(), events.end(), comp);
-}
-
-
-
-
-/* ****************************** */
-int main(int argc, char** argv) {
-    
-    //read number of points from user
-    if (argc!=2) {
-        printf("usage: viewPoints <nbPoints>\n");
-        exit(1);
-    }
-    n = atoi(argv[1]);
-    printf("you entered n=%d\n", n);
-    assert(n >0);
-    
-    initialize_segments_random();
-    print_segments();
-    creatEvents();
-    sortEvents();
-    
-    //Rtimer rt1;
-    //rt_start(rt1);
-    
-    //compute something here
-    
-    //rt_stop(rt1);
-    
-    
-    //print the timing
-    //  char buf [1024];
-    //rt_sprint(buf,rt1);
-    //printf("run time:  %s\n\n", buf);
-    //fflush(stdout);
-    
-    
-    
-    
-    /* initialize GLUT  */
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(WINDOWSIZE, WINDOWSIZE);
-    glutInitWindowPosition(100,100);
-    glutCreateWindow(argv[0]);
-    
-    /* register callback functions */
-    glutDisplayFunc(display);
-    glutKeyboardFunc(keypress);
-    glutIdleFunc(timerfunc);
-    
-    /* init GL */
-    /* set background color black*/
-    glClearColor(0, 0, 0, 0);
-    /* here we can enable depth testing and double buffering and so
-     on */
-    
-    
-    /* give control to event handler */
-    glutMainLoop();
-    return 0;
-}
-
-
-/* ****************************** */
-/* draw the segments stored in global variable segments */
+/*Draw the segments stored in global variable segments */
 void draw_segments(){
     
     //set color
@@ -393,32 +460,6 @@ void draw_segment(segment2D s) {
     glEnd();
 }
 
-//draw all the elements in the active structure
-void draw_active_structure() {
-    
-    //set color
-    glColor3fv(blue);
-    
-    for (multiset<segment2D,yCoordinate>::iterator it = as.begin(); it != as.end(); ++it){
-        glBegin(GL_LINES);
-        glVertex2f(it->start.x, it->start.y);
-        glVertex2f(it->end.x, it->end.y);
-        glEnd();
-    }
-    
-}
-
-
-
-//draw all the elements in intpoints
-void draw_intersection_points() {
-    //set color
-    glColor3fv(white);
-    for (int i =0; i < intpoints.size(); i++){
-        drawCircle(intpoints[i].x, intpoints[i].y,3,20);
-    }
-    
-}
 
 
 
@@ -479,61 +520,4 @@ void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integ
 
 
 
-void timerfunc() {
-    
-    //static int lastFrameTime=0;
-    //note: a static variable, remembered from one call to the next
-    //int now, elapsed_ms;
-    
-    //now = glutGet (GLUT_ELAPSED_TIME);
-    //elapsed_ms = now - lastFrameTime;
-    //lastFrameTime=now;
-    
-    
-    
-    //Search from last element/event looked at until it reaches an elemnt that has an equal x coordinate
-    int i;
-    for (i = lastEventScanned; events[i].eventXCoord <= sweep_line_x; i++) {
-        event e = events[i];
-        if(e.eventType == 'S'){
-            //Add to active structure
-            as.insert(e.segment);
-            asY.insert(e.segment.start.y);
 
-        }else if (e.eventType == 'E'){
-            
-
-
-                asY.erase(asY.find(e.segment.start.y));
-               as.erase(as.find(e.segment));
-            //Todo will cause an error when two lines at same y are both in active set
-            
-        }else{
-            int start = e.segment.start.y;
-            int end = e.segment.end.y;
-            //Swap to make sure start y value is always lower
-            if (start > end) {
-                int temp = start;
-                start = end;
-                end= temp;
-            }
-            
-            itlow = asY.lower_bound(start);
-            itup = asY.upper_bound(end);
-            
-            for (multiset<int,yCoordinateInt>::iterator it = itlow; it != itup; ++it){
-                printf("Intersection: (%i,%d)]\n",e.segment.start.x,*it);
-                point2D intersect;
-                intersect.x = e.segment.start.x;
-                intersect.y = *it;
-                intpoints.push_back(intersect);
-                
-            }
-        }
-    }
-    
-    glutPostRedisplay();
-    sweep_line_x++;
-    lastEventScanned = i;
-    
-}

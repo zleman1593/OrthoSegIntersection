@@ -1,4 +1,4 @@
-/*
+/*Zackery Leman & Ivy Xing
  * 
  *
  * Redistribution and use in source and binary forms, with or without

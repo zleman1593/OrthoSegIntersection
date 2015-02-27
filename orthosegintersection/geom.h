@@ -1,3 +1,5 @@
+//Zackery Leman & Ivy Xing
+
 #ifndef __geom_h
 #define __geom_h
 
@@ -12,7 +14,7 @@ typedef struct _segment2d {
   point2D end; 
 } segment2D;
 
-
+/*Event strut contains the type of the event, the eventXCoord of the event, and the segment associated with the event*/
 typedef struct _event {
     char eventType;
     int eventXCoord ;
