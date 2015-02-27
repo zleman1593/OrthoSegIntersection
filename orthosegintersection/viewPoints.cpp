@@ -499,17 +499,12 @@ void timerfunc() {
             //Add to active structure
             as.insert(e.segment);
             asY.insert(e.segment.start.y);
-            if(e.segment.start.y == 147){
-                printf("aaaaa");
-            }
+
         }else if (e.eventType == 'E'){
             
-         multiset<int,yCoordinateInt>::iterator it;
-            if(e.segment.start.y == 147){
-                printf("aaaaa");
-            }
-            it = asY.find(e.segment.start.y);
-            asY.erase(it);
+
+
+                asY.erase(asY.find(e.segment.start.y));
                as.erase(as.find(e.segment));
             //Todo will cause an error when two lines at same y are both in active set
             
