@@ -187,9 +187,10 @@ void creatEvents() {
 
 void timerfunc() {
     
-    //Iterate from the last element/event looked at until it reaches an element/event that has an equal x coordinate
+    //Iterate from the last element/event looked at until it reaches elements/events that have an equal x-coordinate to the current sweep line position
     int i;
-    for (i = lastEventScanned; events[i].eventXCoord <= sweep_line_x; i++) {
+    for (i = lastEventScanned; events[i].eventXCoord == sweep_line_x; i++) {
+
         //Get event that the sweep line is currently on
         event e = events[i];
         //If event is the start of a horizontal line segement
